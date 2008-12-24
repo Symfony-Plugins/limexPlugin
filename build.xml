@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="limex" default="runTestsWithCoverage" basedir=".">
+
+  <property name="withCoverage" value="false" />
+  
+  <target name="initialiseCoverage">
+    <property name="withCoverage" value="true" />
+    <adhoc><![CDATA[
+      require_once './tests/testProject/test/bootstrap/unit.php';
+      require_once './tests/testProject/plugins/limexPlugin/lib/limexUnitTestCase.class.php';
+    ]]></adhoc>
+  
+    <coverage-setup database="./reports/coverage.db">
+      <fileset dir="tests/testProject/plugins/limexPlugin/lib">
+        <include name="**/*.class.php"/>
+      </fileset>
+    </coverage-setup>
+  </target>
+
+  <target name="finaliseCoverage">
+    <coverage-report outfile="reports/coverage.xml">
+      <report todir="reports/coverage" styledir="reports/xslt"/>
+    </coverage-report>
+  </target>
+
+	<target name="runTests">
+		<phpunit codecoverage="${withCoverage}" haltonfailure="false" haltonerror="false">
+			<formatter type="plain" usefile="false" />
+			<formatter todir="reports" type="xml" />
+			<batchtest>
+				<fileset dir="tests">
+					<include name="**/*TestTest.php" />
+				</fileset>
+			</batchtest>
+		</phpunit>
+
+		<phpunitreport infile="reports/testsuites.xml" format="frames"
+			todir="reports/tests" styledir="reports/xslt" />
+	</target>
+
+  <target name="runTestsWithCoverage" depends="initialiseCoverage,runTests,finaliseCoverage">
+  </target>
+
+
+	<property name="build.src.dir" value="./tests/testProject/plugins/limexPlugin" />
+  <fileset dir="${build.src.dir}" id="build.src.files">
+    <include name="**/*" />
+  </fileset>
+
+	<property name="build.dist.dir" value="./dist/limexPlugin" />
+  <fileset dir="${build.dist.dir}" id="build.dist.files">
+    <include name="**" />
+  </fileset>
+	
+	<property name="pkg.summary" value="limex plugin" />
+	<property name="pkg.description"
+		value="xUnit style adaptor for lime" />
+	<property name="pkg.version" value="0.0.2" />
+	<property name="pkg.relnotes" value="Beta release" />
+  
+  <target name="clean">
+    <delete>
+      <fileset refid="build.dist.files" />
+    </delete>
+    
+    <delete>
+      <fileset dir="reports">
+        <exclude name="**/*.xsl" />
+        <include name="**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+	<target name="build" depends="clean">
+	  <copy todir="${build.dist.dir}" overwrite="true">
+	    <fileset refid="build.src.files" />
+	  </copy>
+	
+		<pearpkg2 name="limexPlugin" dir="${build.src.dir}">
+			<option name="outputdirectory" value="${build.dist.dir}" /> <!-- package.xml written here -->
+			<option name="packagefile" value="package.xml" />
+			<option name="packagedirectory" value="${build.dist.dir}" /> <!-- source files must be present in this directory -->
+			<option name="channel" value="pear.symfony-project.com" />
+			<option name="summary" value="${pkg.summary}" />
+			<option name="description" value="${pkg.description}" />
+			<option name="apiversion" value="${pkg.version}" />
+			<option name="apistability" value="beta" />
+			<option name="releaseversion" value="${pkg.version}" />
+			<option name="releasestability" value="beta" />
+			<option name="license" value="MIT License"/>
+			<option name="phpdep" value="5.0.0" />
+			<option name="pearinstallerdep" value="1.4.6" />
+			<option name="packagetype" value="php" />
+			<option name="notes" value="${pkg.relnotes}" />
+			<mapping name="maintainers">
+				<element>
+					<element key="name" value="G.S.J.Howell" />
+					<element key="email" value="g.s.j.howell@gmail.com" />
+					<element key="role" value="lead" />
+				</element>
+			</mapping>
+      <mapping>
+        <element key="dependencies">
+	        <element key="required">
+	          <element key="package">
+		          <element key="name" value="symfony" />
+		          <element key="min" value="1.0.18" />
+		          <element key="max" value="1.0.19" />
+		        </element>
+		      </element>
+		    </element>
+      </mapping>
+      <fileset dir="${build.src.dir}">
+        <include name="**" />
+      </fileset>
+		</pearpkg2>
+		
+		<!-- 
+
+		I need to write a script which will insert this into dependencies/required/:
+		
+	<package>
+     <name>symfony</name>
+     <channel>pear.symfony-project.com</channel>
+     <min>1.0.18</min>
+     <max>1.0.19</max>
+   </package>
+		 -->
+
+		<exec dir="${build.dist.dir}" command="pear package" />
+	</target>
+
+</project>

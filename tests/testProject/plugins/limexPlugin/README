@@ -1,0 +1,116 @@
+# Limex #
+
+Limex is an xUnit style adaptor for Lime.  Developers accustomed to using PHPUnit or similar packages may be more comfortable with the Limex API. 
+
+__Important__ This is a _beta_ release.
+
+## What it does ##
+
+### Test Case classes ###
+
+Limex allows you to put a test case (i.e. a collection of individual tests) into a class, which you extend from ``limexUnitTestCase``:
+
+    <?php
+    require_once(dirname(__FILE__) . '/../bootstrap/unit.php');
+    require_once(SF_ROOT_DIR . '/plugins/limexPlugin/lib/limexUnitTestCase.class.php');
+    
+    class myTest extends limexUnitTestCase
+    {
+      // your test methods go here
+    }
+    
+    new myTest(new lime_test(1));
+
+__Important__
+
+ * You must new up an instance of your test class at the bottom of the file for it to get executed when you do a ``symfony test-unit``.
+ * You must pass the constructor of your test class an instance of ``lime_test`` with the (integer) number of tests that get run
+ * You must still follow the symfony convention of naming the files containing your tests ``<something>Test.php``. 
+
+### Test Methods ###
+
+You can put individual tests in their own methods.  All methods who's name that start with ``test`` will automatically be executed.
+
+    public function testMethod()
+    {
+      // your assertion goes here
+    }
+
+### Assertions ###
+
+You can access the lime_test object via the test() method:
+
+    public function testMethod()
+    {
+      $this->test()->is(TRUE, TRUE, 'TRUE is TRUE');
+    }
+
+You can also use ``$this->assert<something>`` style assertions:
+
+    public function testMethod()
+    {
+      $this->assertTrue(TRUE, 'TRUE is TRUE');
+    }
+
+The currently supported assertions are:
+
+ * ``assertEquals($expected, $actual, $message = '')``
+ * ``assertFalse($condition, $message = '')``
+ * ``assertNotEquals($expected, $actual, $message = '')``
+ * ``assertNotNull($variable, $message = '')``
+ * ``assertNotRegExp($pattern, $string, $message = '')``
+ * ``assertNull($variable, $message = '')``
+ * ``assertRegExp($pattern, $string, $message = '')``
+ * ``assertTrue($condition, $message = '')``
+ * ``assertType($expected, $actual, $message = '')``
+
+#### Test for exceptions ####
+
+You can use the traditional symfony method of a ``try .. catch`` block:
+
+    public function testMethod()
+    {
+      try {
+        // code you expect to throw an exception
+        $this->test()->fail('exception not thrown...');
+      }
+      catch (MyException $e) {
+        $this->test()->pass('caught exception');
+      }
+    }
+
+Alternatively, you can use the ``@expectedException`` annotation:
+
+    /**
+     * @expectedException MyException
+     */
+    public function testMethod()
+    {
+      //code you expect to thrown an exception
+    }
+
+### Diagnostics ###
+
+limexUnitTestCase also has a ``diag`` method:
+
+    public function diagMethod()
+    {
+      $this->diag('this is a diagnostic message...');
+    }
+
+Like methods named ``test*``, methods named ``diag*`` will be automatically exectuted. 
+
+### Set up and tear down methods ###
+
+As a convenience, limex will also run:
+
+ * A method named ``fixtureSetUp()`` before all tests in current TestCase are run (i.e. once per class)
+ * A method named ``setUp()`` before an individual test method is run
+ * A method named ``tearDown()`` after an individual test method has run
+ * A method named ``fixtureTearDown()`` after all tests in current TestCase have run (i.e. once per class)
+
+You can override these methods (the methods in the base class do nothing) to set up and tear down test fixtures.
+
+## What it doesn't do ##
+
+It doesn't give you any isolation of test methods over and above Lime - because it is (necessarily) still Lime under the hood.

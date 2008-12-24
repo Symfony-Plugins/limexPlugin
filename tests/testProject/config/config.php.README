@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * Configuration
+ *
+ * The tests require access to Lime.
+ *
+ * You need to declare $symfony_lib_dir on your local machine.
+ *
+ * Below are example config.php's for Linux and Windows - your installation may
+ * vary. 
+ */
+ 
+/**
+ * Example Linux PEAR install
+ */
+$sf_symfony_lib_dir = '/usr/local/php5/PEAR/symfony';
+
+/**
+ * Example Windows PEAR install
+ */
+$sf_symfony_lib_dir = 'C:\PHP\PEAR\symfony';
