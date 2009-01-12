@@ -37,4 +37,13 @@ abstract class limexFunctionalTestCase implements limexTestCase
   {
     return $this->browser;
   }
+
+  public function fixtureSetUp() {}
+
+  public function setUp() {}
+
+  public function tearDown() {}
+
+  public function fixtureTearDown() {}
+
 }
