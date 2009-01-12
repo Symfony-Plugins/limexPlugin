@@ -14,7 +14,7 @@
 /**
  * Example Linux PEAR install
  */
-$sf_symfony_lib_dir = '/usr/local/php5/PEAR/symfony';
+$sf_symfony_lib_dir  = '/usr/share/php5/PEAR/symfony';
 
 /**
  * Example Windows PEAR install
