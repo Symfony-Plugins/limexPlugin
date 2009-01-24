@@ -19,12 +19,12 @@ Limex allows you to put a test case (i.e. a collection of individual tests) into
       // your test methods go here
     }
     
-    new myTest(new lime_test(1));
+    new myTest(1);
 
 __Important__
 
  * You must new up an instance of your test class at the bottom of the file for it to get executed when you do a ``symfony test-unit``.
- * You must pass the constructor of your test class an instance of ``lime_test`` with the (integer) number of tests that get run
+ * You must pass the constructor of your test class the (integer) number of tests that get run
  * You must still follow the symfony convention of naming the files containing your tests ``<something>Test.php``. 
 
 ### Test Methods ###
@@ -38,11 +38,11 @@ You can put individual tests in their own methods.  All methods who's name that 
 
 ### Assertions ###
 
-You can access the lime_test object via the test() method:
+``limexUnitTestCase`` extends lime_test, so you can access the methods of lime_test object via ``$this``:
 
     public function testMethod()
     {
-      $this->test()->is(TRUE, TRUE, 'TRUE is TRUE');
+      $this->is(TRUE, TRUE, 'TRUE is TRUE');
     }
 
 You can also use ``$this->assert<something>`` style assertions:
@@ -72,10 +72,10 @@ You can use the traditional symfony method of a ``try .. catch`` block:
     {
       try {
         // code you expect to throw an exception
-        $this->test()->fail('exception not thrown...');
+        $this->fail('exception not thrown...');
       }
       catch (MyException $e) {
-        $this->test()->pass('caught exception');
+        $this->pass('caught exception');
       }
     }
 
