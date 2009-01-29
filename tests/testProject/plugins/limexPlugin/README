@@ -24,7 +24,7 @@ Limex allows you to put a test case (i.e. a collection of individual tests) into
 __Important__
 
  * You must new up an instance of your test class at the bottom of the file for it to get executed when you do a ``symfony test-unit``.
- * You must pass the constructor of your test class the (integer) number of tests that get run
+ * You must pass the constructor of your test class the (integer) number of tests that get run.  You can optionally pass a lime_output_color object, too.
  * You must still follow the symfony convention of naming the files containing your tests ``<something>Test.php``. 
 
 ### Test Methods ###
